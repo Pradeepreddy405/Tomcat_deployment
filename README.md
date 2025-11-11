@@ -32,7 +32,7 @@ Work flow of the project :
 
 Step by step execution :
 
-Step 1: Launch an EC2 Instance --(cloud setup - virutal machine it might be any cloud (AWS,GCP or AZURE ) - Here i have taken AWS_cloud
+Step 1; Launch an EC2 Instance --(cloud setup - virutal machine it might be any cloud (AWS,GCP or AZURE ) - Here i have taken AWS_cloud
 
             Go to AWS Console → EC2 → Launch Instance
 
@@ -57,7 +57,33 @@ Step 1: Launch an EC2 Instance --(cloud setup - virutal machine it might be any 
     Connect:ssh -i your-key.pem ubuntu@<EC2-Public-IP>
 
 
+Step 2; Install Java on Amazon Linux 2023
+
+        Why we need this ?
+
+        -> Jenkins and Apache Tomcat both require Java to run.
+
+        -> We’ll install OpenJDK 17, which is stable and supported by both Jenkins and Tomcat.
 
 
+Always update packages before installing new ones. (dnf is the default package manager in Amazon Linux 2023 )
+command : sudo dnf update -y
+
+Check available Java versions
+
+	command: sudo dnf search OpenJDK
+
+Verify Java home (optional but useful for Tomcat)
+
+Find Java installation path:
+
+	command: readlink -f $(which java)
+
+
+If not yet setup  , go with below setups
+
+	command: echo 'export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto.x86_64' | sudo tee -a /etc/profile
+	command: echo 'export PATH=$PATH:$JAVA_HOME/bin' | sudo tee -a /etc/profile
+	command: source /etc/profile
 
 
