@@ -119,3 +119,73 @@ step 3 : Step-by-Step: Installing Tomcat 10 on Amazon Linux 2023
 	Optional ----> Tomcat logs everything during startup in the logs folder.
 
 	Commandd :tail -f /opt/tomcat/apache-tomcat-10.1.24/logs/catalina.out
+
+
+
+Step 4 – Install Jenkins on the Same EC2 (t2.micro, Amazon Linux 2023)
+
+Jenkins is an open-source automation server primarily used for continuous integration and continuous delivery (CI/CD). 
+It is written in Java and relies on the Java Virtual Machine (JVM) to run. 
+This applies whether you are installing Jenkins on a local machine or in a cloud environment.
+Therefore, regardless of the deployment location (on-premises or cloud), the Java Runtime Environment (JRE)  
+Java Development Kit (JDK) is a fundamental prerequisite for Jenkins to operate.
+
+
+Update packages
+Command : sudo dnf update -y  
+
+Jenkins requires Java 17 or 21; Corretto 17 is recommended  for Jenkins
+java -version
+
+
+Add the official Jenkins repository and key
+
+Command : sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+Command : sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+
+Install Jenkins
+Command: sudo dnf install -y Jenkins
+
+Create or fix Jenkins directories (manual step for AL2023).Sometimes AL2023 misses default folders; create them manually:
+
+Command: sudo mkdir -p /var/lib/jenkins /var/log/jenkins /var/cache/jenkins
+Command: sudo chown -R jenkins:jenkins /var/lib/jenkins /var/log/jenkins /var/cache/jenkins
+
+
+Caution : Proceed to the below step if only youre unable lo start Jenkins service on your server or missed you'r environment file missing
+
+Create the environment file (if missing) 
+sudo tee /etc/sysconfig/jenkins > /dev/null <<'EOF'
+JENKINS_HOME="/var/lib/jenkins"
+JENKINS_PORT="8081"               # use 8081 because Tomcat already uses 8080
+JENKINS_USER="jenkins"
+JENKINS_GROUP="jenkins"
+JENKINS_JAVA_CMD="/usr/bin/java"
+JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Xmx512m -Djenkins.install.runSetupWizard=true"
+EOF
+
+Allow port 8081 in security group -> add a rule: In the AWS Console → EC2 → Security Groups → Inbound Rules,
+
+Reload systemd and start Jenkins
+command :
+	sudo systemctl daemon-reexec
+	sudo systemctl daemon-reload
+	sudo systemctl enable jenkins
+	sudo systemctl start jenkins
+	sudo systemctl status jenkins
+
+
+Unlock Jenkins
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+
+
+
+
+
+
+
