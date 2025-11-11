@@ -87,3 +87,35 @@ If not yet setup  , go with below setups
 	command: source /etc/profile
 
 
+step 3 : Step-by-Step: Installing Tomcat 10 on Amazon Linux 2023
+
+
+	Command : sudo wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.24/bin/apache-tomcat-10.1.24.tar.gz
+
+
+	Extract the Tomcat files
+
+        After it’s downloaded, extract it using below command :
+	Command : sudo tar -xvzf apache-tomcat-10.1.24.tar.gz
+
+	Create a directory called tomcat in opt directory and move the extracted directory folder and files to the newly created folder (tomcat)
+        Command: sudo mv apache-tomcat-10.1.24 tomcat
+
+        Give the required permissions for the users to start the tomcat service scripts
+	Command: sudo chmod +x /opt/tomcat/bin/*.sh
+
+        Start the tomcat manually
+	Command: sudo /opt/tomcat/bin/startup.sh
+
+	check if tomcat service is running by below command:
+	Command: ps -ef | grep tomcat
+
+	Check if Tomcat is listening on port 8080
+	Command: sudo netstat -tulnp | grep 8080
+
+	(or)
+	Command: sudo ss -tulnp | grep 8080
+
+	Optional ----> Tomcat logs everything during startup in the logs folder.
+
+	Commandd :tail -f /opt/tomcat/apache-tomcat-10.1.24/logs/catalina.out
